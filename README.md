@@ -1,0 +1,1 @@
+Este proyecto se usará para aprender a realizar una API siguiendo las directrices de JSON:API
