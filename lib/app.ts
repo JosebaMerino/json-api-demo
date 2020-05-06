@@ -2,15 +2,23 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 
+import { PhotoRoutes } from './routes/photo.routes';
+
 const morgan = require('morgan');
 class App {
 
   public app: express.Application;
+
+  public photoRoutes: PhotoRoutes = new PhotoRoutes();
+
   public mongoUrl: string = 'mongodb://localhost/json-api-demo';
 
   constructor() {
     this.app = express();
     this.config();
+
+    this.photoRoutes.routes(this.app);
+
     this.mongoSetup();
   }
 
