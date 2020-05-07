@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "creationDate": "2020-04-11",
+    "modificationDate": "2020-04-23",
+    "deletionDate": null
+  },
+  "data": {
+    "type": "photos",
+    "id": "5ea6728461",
+    "attributes": {
+      "url": "https://picsum.photos/200/300"
+    },
+    "links": {
+      "self": "/photos/5ea6728461"
+    }
+  }
+}

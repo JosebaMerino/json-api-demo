@@ -1,10 +1,36 @@
 import { GenericController } from './generic.controller';
 
-import { PhotoSchema, Photo, modelName } from '../models/photo.model';
+import { Request, Response } from 'express';
 
-export class PhotoController extends GenericController<Photo> {
+import { PhotoSchema, Photo, modelName, PhotoDocument} from '../models/photo.model';
+
+export class PhotoController extends GenericController<PhotoDocument> {
   constructor() {
-    console.log('PhotoController constructed');
     super(modelName, PhotoSchema);
+    console.log('PhotoController created');
+
+  }
+
+  post = (req: Request, res: Response) => {
+
+    const model = this.getModel();
+
+    let photo: Photo = new Photo;
+
+    photo.fromResource(req.body);
+
+    console.log({photo});
+
+    const newPhoto = new model(photo);
+
+    newPhoto.save((err, photo) => {
+      const photoClass : Photo = Photo(photo);
+      console.log(photo);
+      if (err) {
+        res.send(err);
+      } else {
+        res.json(photo);
+      }
+    });
   }
 }

@@ -137,6 +137,7 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     }
   }
   public add = (req: Request, res: Response) => {
+
     const newDedication = new this.model(req.body);
 
     newDedication.save((err, dedication) => {

@@ -2,9 +2,10 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 
+import morgan = require('morgan');
+
 import { PhotoRoutes } from './routes/photo.routes';
 
-const morgan = require('morgan');
 class App {
 
   public app: express.Application;

@@ -5,13 +5,13 @@ export class PhotoRoutes {
 
   public routes(app): void {
     app.route('/photos')
-    .get(this.photoController.getAll)
-    .post(this.photoController.add);
+    .post(this.photoController.post);
+    // .get(this.photoController.getAll)
 
-    app.route('/photos/:id')
-    .get(this.photoController.getById)
-    .patch(this.photoController.patch)
-    .put(this.photoController.update)
-    .delete(this.photoController.delete);
+    // app.route('/photos/:id')
+    // .get(this.photoController.getById)
+    // .patch(this.photoController.patch)
+    // .put(this.photoController.update)
+    // .delete(this.photoController.delete);
   }
 }
