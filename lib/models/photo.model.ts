@@ -45,6 +45,8 @@ export class Photo implements IPhoto {
         this.modificationDate = resource.meta.modificationDate;
         this.deletionDate = resource.meta.deletionDate;
 
+      } else {
+        this.creationDate = new Date();
       }
     }
   }
