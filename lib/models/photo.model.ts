@@ -1,4 +1,7 @@
 import { Metadata } from './metadata.model';
+import { Resourceable } from './resourceable.interface';
+import { Resource } from './resource.interface';
+
 import { Schema, Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
@@ -9,8 +12,7 @@ export interface IPhoto extends Metadata {
   url: string;
 }
 
-
-export class Photo implements IPhoto {
+export class Photo implements IPhoto, Resourceable {
   creationDate: Date;
   modificationDate: Date;
   deletionDate: Date;
@@ -24,8 +26,17 @@ export class Photo implements IPhoto {
   toResource = (): PhotoResource => {
     const resource: PhotoResource = new PhotoResource();
 
+    // map data fields
     resource.data.id = this._id;
     resource.data.attributes.url = this.url;
+    resource.data.links = {
+      self: `/photos/${this._id}`,
+    };
+
+    // map meta fields
+    resource.meta.creationDate = this.creationDate;
+    resource.meta.modificationDate = this.modificationDate;
+    resource.meta.deletionDate = this.deletionDate;
 
     return resource;
   }
@@ -50,6 +61,15 @@ export class Photo implements IPhoto {
       }
     }
   }
+
+  fromJSON = (json : any) : void => {
+    console.log(json);
+    this.creationDate = json.creationDate;
+    this.modificationDate = json.modificationDate;
+    this.deletionDate = json.deletionDate;
+    this._id = json._id;
+    this.url = json.url;
+  }
 }
 
 export let PhotoSchema : Schema = new Schema({
@@ -63,7 +83,7 @@ export type PhotoDocument = Photo & Document;
 
 export default mongoose.model<PhotoDocument>(modelName, PhotoSchema);
 
-export class PhotoResource {
+export class PhotoResource implements Resource {
   meta?: {
     creationDate?: Date,
     modificationDate?: Date,
@@ -71,17 +91,28 @@ export class PhotoResource {
   };
   data: {
     type: string,
-    id: string,
-    attributes: {
+    id?: string,
+    attributes?: {
       url: string,
     },
-    links: {
+    links?: {
       self: string,
     },
   };
 
   constructor() {
+    if (!this.meta) {
+      this.meta = {};
+    }
     this.meta.creationDate = new Date();
-    this.data.type = 'photos';
+
+    if (!this.data) {
+      this.data = {
+        type: 'photos',
+      };
+      this.data.attributes = {
+        url:undefined,
+      };
+    }
   }
 }
