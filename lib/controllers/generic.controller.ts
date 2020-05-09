@@ -5,6 +5,7 @@ import * as Common from './common';
 import { Metadata } from '../models/metadata.model';
 
 import { IBasicController } from './basicController.interface';
+import { Resource } from 'models/resource.interface';
 
 export class GenericController<T extends mongoose.Document & Metadata> implements IBasicController {
   public model;
