@@ -1,17 +1,25 @@
 import { Request, Response } from 'express';
+import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import * as Common from './common';
 
 import { Metadata } from '../models/metadata.model';
+import { ResourceableBuilder } from '../models/builders/resourceable.builder';
 
 import { IBasicController } from './basicController.interface';
+import { Resourceable } from 'models/resourceable.interface';
 import { Resource } from 'models/resource.interface';
 
 export class GenericController<T extends mongoose.Document & Metadata> implements IBasicController {
-  public model;
-  constructor(name: string, schema: mongoose.Schema) {
+  public model: mongoose.Model<Document, {}>;
+  public resourceableBuilder: ResourceableBuilder;
+
+  constructor(name: string, schema: mongoose.Schema, resourceableBuilder: ResourceableBuilder) {
     this.model = mongoose.model<T>(name, schema);
+    this.resourceableBuilder = resourceableBuilder;
+    //this.resourceable = new R();
   }
+
 
   public getModel() {
     return this.model;
@@ -48,23 +56,30 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     } else {
       searchCondition = Common.onlyNotDeleted;
     }*/
-    this.model.find(searchCondition, (err, dedications) => {
+    this.model.find(searchCondition, (err, documents : any[]) => {
+      const resultResources : Resource[] = [];
+
+      documents.forEach((document) => {
+        resultResources.push(this.JSONtoResource(document));
+      });
+
       if (err) {
         res.send(err);
       }
-      res.json(dedications);
+      res.json(resultResources);
     });
   }
   public getById = (req: Request, res: Response) => {
-    this.model.findById(req.params.id, (err, dedication) => {
+    this.model.findById(req.params.id, (err, document) => {
       if (err) {
         res.send(err);
       }
-      res.json(dedication);
+      res.json(this.JSONtoResource(document));
     });
   }
 
   public update = (req: Request, res: Response) => {
+    /* 
     const body : T = req.body;
 
     body.modificationDate = new Date();
@@ -89,6 +104,7 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
           );
       }
     });
+    */
   }
 
   public patch = (req: Request, res: Response) => {
@@ -138,15 +154,19 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     }
   }
   public add = (req: Request, res: Response) => {
+    const resourceable : Resourceable = this.resourceableBuilder.buildResourceable();
 
-    const newDedication = new this.model(req.body);
+    resourceable.fromResource(req.body);
 
-    newDedication.save((err, dedication) => {
+    const newDocument = new this.model(resourceable);
+
+    newDocument.save((err, document) => {
       if (err) {
         res.send(err);
+      } else {
+        res.send(this.JSONtoResource(document));
       }
-      res.json(dedication);
-    });
+    })
   }
 
   /**
@@ -165,5 +185,11 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     }
 
     return resul;
+  }
+
+  private JSONtoResource(json: any): Resource {
+    const resourceable: Resourceable = this.resourceableBuilder.buildResourceable();
+    resourceable.fromJSON(json);
+    return resourceable.toResource();
   }
 }

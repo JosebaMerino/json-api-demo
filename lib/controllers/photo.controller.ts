@@ -3,20 +3,22 @@ import * as Common from './common';
 
 import { Request, Response } from 'express';
 
-import { PhotoSchema, Photo, modelName, PhotoDocument, PhotoResource } from '../models/photo.model';
+import { PhotoSchema, Photo, modelName, PhotoDocument } from '../models/photo.model';
+import { PhotoResourceableBuilder } from '../models/builders/photoResourceable.builder';
 
 import * as mongoose from 'mongoose';
+import { Resource } from 'models/resource.interface';
 
 export class PhotoController extends GenericController<PhotoDocument> {
   constructor() {
-    super(modelName, PhotoSchema);
+    super(modelName, PhotoSchema, new PhotoResourceableBuilder());
     console.log('PhotoController created');
 
   }
 
   post = (req: Request, res: Response) => {
 
-    const model: mongoose.Model<PhotoDocument, {}>  = this.getModel();
+    const model = this.getModel();
 
     let photo: Photo = new Photo;
 
@@ -78,11 +80,11 @@ export class PhotoController extends GenericController<PhotoDocument> {
     } else {
       searchCondition = Common.onlyNotDeleted;
     }*/
-    this.model.find(searchCondition, (err, photos: Array<any>) => {
-      const resultResources : Array<PhotoResource> = [];
+    this.model.find(searchCondition, (err, photos: any[]) => {
+      const resultResources : Resource[] = [];
 
       photos.forEach(photo => {
-        resultResources.push(this.JSONtoResource(photo));
+        resultResources.push(this.JSONtoResourcee(photo));
       });
 
       if (err) {
@@ -111,7 +113,7 @@ export class PhotoController extends GenericController<PhotoDocument> {
     return resul;
   }
 
-  private JSONtoResource( json: any ): PhotoResource {
+  private JSONtoResourcee( json: any ): Resource {
     const photo = new Photo();
 
     photo.fromJSON(json);
