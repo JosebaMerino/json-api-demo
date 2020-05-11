@@ -11,7 +11,8 @@ import { Resourceable } from 'models/resourceable.interface';
 import { Resource } from 'models/resource.interface';
 
 export class GenericController<T extends mongoose.Document & Metadata> implements IBasicController {
-  public model: mongoose.Model<Document, {}>;
+  // public model: mongoose.Model<T, {}>;
+  public model;
   public resourceableBuilder: ResourceableBuilder;
 
   constructor(config: ControllerConfig) {
@@ -78,32 +79,45 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
   }
 
   public update = (req: Request, res: Response) => {
-    /* 
-    const body : T = req.body;
 
-    body.modificationDate = new Date();
+    const reqResource : Resource = req.body;
 
-    this.model.findById(req.params.id, (err, dedication) => {
+    this.model.findById(req.params.id, (err, document) => {
       if (err) {
         res.send(err);
       } else {
-        body.creationDate = dedication.creationDate;
-        body.deletionDate = dedication.deletionDate;
+        if (!reqResource.meta) {
+          reqResource.meta = {};
+        }
+
+        reqResource.meta.creationDate = document.creationDate;
+        reqResource.meta.modificationDate = new Date();
+        reqResource.meta.deletionDate = document.deletionDate;
+        reqResource.data.id = document._id;
+
+        console.log(reqResource);
+
+        const resourceable : Resourceable = this.resourceableBuilder.buildResourceable();
+
+        resourceable.fromResource(reqResource);
+        
+        console.log(resourceable);
+
         this.model.findOneAndReplace(
           { _id: req.params.id },
-          body,
+          resourceable,
           { new: true },
-          (err, dedication: T) => {
+          (err, document) => {
             if (err) {
               res.send(err);
             } else {
-              res.json(dedication);
+              res.json(this.JSONtoResource(document));
             }
           },
           );
       }
     });
-    */
+  
   }
 
   public patch = (req: Request, res: Response) => {

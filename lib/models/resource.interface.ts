@@ -1,5 +1,5 @@
 export interface Resource {
-  meta?: object;
+  meta?: Meta;
   data: Data;
 }
 
@@ -9,4 +9,10 @@ interface Data {
   attributes?: object;
   relationships?: object[];
   links?: object;
+}
+
+interface Meta {
+  creationDate?: Date;
+  modificationDate?: Date;
+  deletionDate?: Date;
 }

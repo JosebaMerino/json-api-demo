@@ -14,8 +14,8 @@ export class PhotoRoutes {
 
     app.route('/photos/:id')
     .get(this.photoController2.getById)
-    // .patch(this.photoController.patch)
-    // .put(this.photoController.update)
+    // .patch(this.photoController2.patch)
+    .put(this.photoController2.update)
     // .delete(this.photoController.delete);
   }
 }
