@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Document } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
 import * as Common from './common';
 
@@ -14,10 +14,9 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
   public model: mongoose.Model<Document, {}>;
   public resourceableBuilder: ResourceableBuilder;
 
-  constructor(name: string, schema: mongoose.Schema, resourceableBuilder: ResourceableBuilder) {
-    this.model = mongoose.model<T>(name, schema);
-    this.resourceableBuilder = resourceableBuilder;
-    //this.resourceable = new R();
+  constructor(config: ControllerConfig) {
+    this.model = mongoose.model<T>(config.modelName, config.schema);
+    this.resourceableBuilder = config.resourceableBuilder;
   }
 
 
@@ -191,5 +190,20 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     const resourceable: Resourceable = this.resourceableBuilder.buildResourceable();
     resourceable.fromJSON(json);
     return resourceable.toResource();
+  }
+
+}
+/**
+ * Class used to configure a GenericController
+ */
+export class ControllerConfig {
+  modelName: string;
+  schema: Schema;
+  resourceableBuilder: ResourceableBuilder;
+
+  constructor(modelName: string, schema: Schema, resourceableBuilder: ResourceableBuilder) {
+    this.modelName = modelName;
+    this.schema = schema;
+    this.resourceableBuilder = resourceableBuilder;
   }
 }

@@ -2,8 +2,11 @@ import { Metadata } from './metadata.model';
 import { Resourceable } from './resourceable.interface';
 import { Resource } from './resource.interface';
 
+import { ControllerConfig } from '../controllers/generic.controller';
+
 import { Schema, Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { PhotoResourceableBuilder } from './builders/photoResourceable.builder';
 
 export const modelName: string = 'Photo';
 
