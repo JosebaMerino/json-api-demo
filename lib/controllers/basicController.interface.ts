@@ -4,13 +4,14 @@ export interface IBasicController {
 
   // CRUD -> Create, Read, Update & Delete
 
-  getAll(req: Request, res: Response);
-  getById(req: Request, res: Response);
+  getAll(req: Request, res: Response): void;
+  getById(req: Request, res: Response): void;
 
-  add(req: Request, res: Response);
+  add(req: Request, res: Response): void;
 
-  update(req: Request, res: Response, replace: boolean);
+  patch(req: Request, res: Response): void;
+  put(req: Request, res: Response): void;
 
-  delete(req: Request, res: Response);
+  delete(req: Request, res: Response): void;
 
 }

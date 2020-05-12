@@ -11,7 +11,6 @@ import { Resourceable } from 'models/resourceable.interface';
 import { Resource } from 'models/resource.interface';
 
 export class GenericController<T extends mongoose.Document & Metadata> implements IBasicController {
-  // public model: mongoose.Model<T, {}>;
   public model;
   public resourceableBuilder: ResourceableBuilder;
 
@@ -78,7 +77,15 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     });
   }
 
-  public update = (req: Request, res: Response, replace: boolean) => {
+  public patch = (req: Request, res: Response) => {
+    this.update(req, res, false);
+  }
+
+  public put = (req: Request, res: Response) => {
+    this.update(req, res, true);
+  }
+
+  private update = (req: Request, res: Response, replace: boolean) => {
 
     const reqResource : Resource = req.body;
 
@@ -92,7 +99,7 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
 
         reqResource.meta.creationDate = document.creationDate;
         reqResource.meta.modificationDate = new Date();
-        reqResource.meta.deletionDate = document.deletionDate;
+        reqResource.meta.deletionDate = document.deletionDate ? document.deletionDate : undefined ;
         reqResource.data.id = document._id;
 
         console.log(reqResource);
@@ -134,23 +141,6 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
   
   }
 
-  public patch = (req: Request, res: Response) => {
-
-    const reqResource : Resource = req.body;
-
-    reqResource.meta.modificationDate = new Date();
-
-    this.model.findOneAndUpdate(
-      { _id: req.params.id },
-      body,
-      { new: true },
-      (err, dedication) => {
-        if (err) {
-          res.send(err);
-        }
-        res.json(dedication);
-      });
-  }
   public delete = (req: Request, res: Response) => {
 
     let fisicalDelete: Boolean = false;
@@ -166,16 +156,17 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
         if (err) {
           res.send(err);
         }
-        res.json({ msg: 'Deleted succesfully forever!' });
+        res.status(204);
       });
     } else {
       // Hace un borrado logico
       // It makes a logic delete
       this.model.updateOne({ _id: req.params.id }, { deletionDate: new Date() }, (err) => {
         if (err) {
+          console.log('lul');
           res.send(err);
         } else {
-          res.send({ msg: 'Deleted succesfully!' });
+          res.status(204);
         }
       });
     }
