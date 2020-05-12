@@ -9,8 +9,7 @@ export interface IBasicController {
 
   add(req: Request, res: Response);
 
-  update(req: Request, res: Response);
-  patch(req: Request, res: Response);
+  update(req: Request, res: Response, replace: boolean);
 
   delete(req: Request, res: Response);
 

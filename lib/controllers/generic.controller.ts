@@ -78,7 +78,7 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     });
   }
 
-  public update = (req: Request, res: Response) => {
+  public update = (req: Request, res: Response, replace: boolean) => {
 
     const reqResource : Resource = req.body;
 
@@ -103,7 +103,8 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
         
         console.log(resourceable);
 
-        this.model.findOneAndReplace(
+        if (replace) {
+          this.model.findOneAndReplace(
           { _id: req.params.id },
           resourceable,
           { new: true },
@@ -115,6 +116,19 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
             }
           },
           );
+        } else {
+          this.model.findOneAndUpdate(
+            { _id: req.params.id },
+            resourceable,
+            { new: true },
+            (err, document) => {
+              if (err) {
+                res.send(err);
+              }
+              res.json(this.JSONtoResource(document));
+            });
+        }
+          
       }
     });
   
@@ -122,9 +136,9 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
 
   public patch = (req: Request, res: Response) => {
 
-    const body : T = req.body;
+    const reqResource : Resource = req.body;
 
-    body.modificationDate = new Date();
+    reqResource.meta.modificationDate = new Date();
 
     this.model.findOneAndUpdate(
       { _id: req.params.id },
