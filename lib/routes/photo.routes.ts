@@ -15,7 +15,10 @@ export class PhotoRoutes {
     app.route('/photos/:id')
     .get(this.photoController2.getById)
     .patch(this.photoController2.patch)
-    .put(this.photoController2.put);
-    // .delete(this.photoController.delete);
+    .put(this.photoController2.put)
+    .delete(this.photoController2.delete)
+    .all((req, res) => {
+      res.status(500).json({'message': 'url not found'})
+    });
   }
 }

@@ -161,14 +161,16 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     } else {
       // Hace un borrado logico
       // It makes a logic delete
-      this.model.updateOne({ _id: req.params.id }, { deletionDate: new Date() }, (err) => {
-        if (err) {
-          console.log('lul');
-          res.send(err);
-        } else {
-          res.status(204);
+      this.model.updateOne({ _id: req.params.id }, { deletionDate: new Date() },
+        (err, document) => {
+          if (err) {
+            console.log('lul');
+            res.send(err);
+          } else {
+            res.status(204).json({});
+          }
         }
-      });
+        );
     }
   }
   public add = (req: Request, res: Response) => {
