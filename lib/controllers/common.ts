@@ -32,3 +32,11 @@ export function queryNotDeleted(id: string): any {
     };
   return query;
 }
+
+export function queryAll(id: string): any {
+  const query =
+    {
+      _id: id,
+    };
+  return query;
+}
