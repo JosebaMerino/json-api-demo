@@ -168,14 +168,15 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
         Common.queryNotDeleted(req.params.id),
         { deletionDate: new Date() },
         (err, writeOpResult) => {
-          console.log({writeOpResult});
           if (err) {
-            console.log('lul');
+            console.log('ha ocurrido un error');
             res.send(err);
-          } else {
-
-            console.log('borrado corectamente')
+          } else if (writeOpResult.nModified === 1) {
+            console.log('borrado corectamente');
             res.status(204).json({});
+          } else if (writeOpResult.nModified === 0) {
+            console.log('No se ha borrado nada');
+            res.status(404).json({});
           }
         },
     );
