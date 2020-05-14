@@ -161,11 +161,15 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     if (fisicalDelete) {
       // Hace un borrado fisico
       // It makes a fisical delete
-      this.model.remove({ _id: req.params.id }, (err) => {
+      this.model.remove(Common.queryDeleted(req.params.id), (err, writeOpResult) => {
+        console.log({writeOpResult});
         if (err) {
           res.send(err);
+        } else if (writeOpResult.deletedCount === 0) {
+          res.status(404).send({});
+        } else {
+          res.status(204).send({});
         }
-        res.status(204);
       });
     } else {
       // Hace un borrado logico

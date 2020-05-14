@@ -33,6 +33,19 @@ export function queryNotDeleted(id: string): any {
   return query;
 }
 
+export function queryDeleted(id: string): any {
+  const query =
+    {
+      $and: [
+        {
+          _id: id,
+        },
+        onlyDeleted,
+      ],
+    };
+  return query;
+}
+
 export function queryAll(id: string): any {
   const query =
     {
