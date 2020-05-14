@@ -99,9 +99,20 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
 
     const reqResource : Resource = req.body;
 
-    this.model.findById(req.params.id, (err, document) => {
+    const queryParameters = req.query;
+    const id = req.params.id;
+    let searchCondition: any;
+    if (this.booleanParser(String(queryParameters.all))) {
+      searchCondition = Common.queryAll(id);
+    } else {
+      searchCondition = Common.queryNotDeleted(id);
+    }
+
+    this.model.findOne(searchCondition, (err, document) => {
       if (err) {
         res.send(err);
+      } else if (!document) {
+        res.status(404).send({});
       } else {
         if (!reqResource.meta) {
           reqResource.meta = {};
