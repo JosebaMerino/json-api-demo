@@ -66,12 +66,15 @@ export class Photo implements IPhoto, Resourceable {
   }
 
   fromJSON = (json : any) : void => {
-    console.log(json);
-    this.creationDate = json.creationDate;
-    this.modificationDate = json.modificationDate;
-    this.deletionDate = json.deletionDate;
-    this._id = json._id;
-    this.url = json.url;
+    if (json) {
+      console.log(json);
+      this.creationDate = json.creationDate;
+      this.modificationDate = json.modificationDate;
+      this.deletionDate = json.deletionDate;
+      this._id = json._id;
+      this.url = json.url;
+      console.log(this);
+    }
   }
 }
 

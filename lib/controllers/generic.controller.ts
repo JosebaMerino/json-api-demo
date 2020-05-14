@@ -68,11 +68,15 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     });
   }
   public getById = (req: Request, res: Response) => {
-    this.model.findById(req.params.id, (err, document) => {
+    // this.model.findById(req.params.id, (err, document) => {
+    this.model.findOne(Common.queryNotDeleted(req.params.id), (err, document) => {
       if (err) {
         res.send(err);
+      } else if (!document) {
+        res.status(404).send({});
+      } else {
+        res.json(this.JSONtoResource(document));
       }
-      res.json(this.JSONtoResource(document));
     });
   }
 
@@ -163,11 +167,14 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
       this.model.updateOne(
         Common.queryNotDeleted(req.params.id),
         { deletionDate: new Date() },
-        (err, document) => {
+        (err, writeOpResult) => {
+          console.log({writeOpResult});
           if (err) {
             console.log('lul');
             res.send(err);
           } else {
+
+            console.log('borrado corectamente')
             res.status(204).json({});
           }
         },
