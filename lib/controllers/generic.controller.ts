@@ -19,13 +19,12 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     this.resourceableBuilder = config.resourceableBuilder;
   }
 
-
   public getModel() {
     return this.model;
   }
 
   public test = (req: Request, res: Response) => {
-    console.log(this)
+    console.log(this);
     console.log(this.model);
     res.json(this.model);
   }
@@ -107,7 +106,7 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
         const resourceable : Resourceable = this.resourceableBuilder.buildResourceable();
 
         resourceable.fromResource(reqResource);
-        
+
         console.log(resourceable);
 
         if (replace) {
@@ -135,10 +134,9 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
               res.json(this.JSONtoResource(document));
             });
         }
-          
       }
     });
-  
+
   }
 
   public delete = (req: Request, res: Response) => {
@@ -161,7 +159,10 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
     } else {
       // Hace un borrado logico
       // It makes a logic delete
-      this.model.updateOne({ _id: req.params.id }, { deletionDate: new Date() },
+      console.log(Common.queryNotDeleted(req.params.id));
+      this.model.updateOne(
+        Common.queryNotDeleted(req.params.id),
+        { deletionDate: new Date() },
         (err, document) => {
           if (err) {
             console.log('lul');
@@ -169,8 +170,8 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
           } else {
             res.status(204).json({});
           }
-        }
-        );
+        },
+    );
     }
   }
   public add = (req: Request, res: Response) => {
@@ -186,7 +187,7 @@ export class GenericController<T extends mongoose.Document & Metadata> implement
       } else {
         res.send(this.JSONtoResource(document));
       }
-    })
+    });
   }
 
   /**

@@ -19,3 +19,16 @@ export const onlyDeleted = {
   ],
 };
 export const all = {};
+
+export function queryNotDeleted(id: string): any {
+  const query =
+    {
+      $and: [
+        {
+          _id: id,
+        },
+        onlyNotDeleted,
+      ],
+    };
+  return query;
+}
