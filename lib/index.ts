@@ -4,6 +4,7 @@ import * as API from 'json-api';
 import * as mongoose from 'mongoose';
 
 const APIError = API.types.Error;
+const PORT = '3001';
 
 mongoose.connect('mongodb://localhost/json-api-demo2');
 
@@ -12,7 +13,9 @@ let models = {
 };
 
 let adapter = new API.dbAdapters.Mongoose(models);
-let registry = new API.ResourceTypeRegistry({},{ dbAdapter: adapter });
+let registry = new API.ResourceTypeRegistry({
+  photos: require('../resource-descriptions/photos'),
+},{ dbAdapter: adapter });
 
 let Controller = new API.controllers.API(registry);
 
@@ -20,7 +23,7 @@ let Controller = new API.controllers.API(registry);
 var Docs = new API.controllers.Documentation(registry, { name: 'JSON_API_DEMO' });
 
 // tell the lib the host name your API is served from
-let opts = { host: 'http://127.0.0.1:3000' };
+let opts = { host: `http://127.0.0.1:${PORT}` };
 
 // Initialize the express app + front controller
 let app = express();
@@ -46,5 +49,5 @@ app.use((req, res, next) => {
 });
 
 // And we're done! Start 'er up!
-console.log('Starting up! Visit 127.0.0.1:3000 to see the docs.');
-app.listen(3000);
+console.log(`Starting up! Visit 127.0.0.1:${PORT} to see the docs.`);
+app.listen(PORT);
