@@ -28,6 +28,23 @@ let Front = new API.httpStrategies.Express(Controller, Docs, opts);
 let apiReqHandler = Front.apiRequest;
 
 // ENABLE CORS
-app.use(function(req, res, next) {
-  
-})
+app.use((req, res, next) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  next();
+});
+
+app.get('/', Front.docsRequest);
+app.route('/:type(photos)')
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+app.route('/:type(photos)/:id')
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+app.route('/:type(photos)/:id/relationships/:relationship')
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+
+app.use((req, res, next) => {
+  Front.sendError(new APIError({ status: 404 }), req, res, next);
+});
+
+// And we're done! Start 'er up!
+console.log('Starting up! Visit 127.0.0.1:3000 to see the docs.');
+app.listen(3000);

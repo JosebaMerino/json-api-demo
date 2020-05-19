@@ -8,14 +8,14 @@ import { Schema, Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { PhotoResourceableBuilder } from './builders/photoResourceable.builder';
 
-export const modelName: string = 'Photo';
+const modelName: string = 'Photo';
 
-export interface IPhoto extends Metadata {
+interface IPhoto extends Metadata {
   _id: string;
   url: string;
 }
 
-export class Photo implements IPhoto, Resourceable {
+class Photo implements IPhoto, Resourceable {
   creationDate: Date;
   modificationDate: Date;
   deletionDate: Date;
@@ -78,19 +78,17 @@ export class Photo implements IPhoto, Resourceable {
   }
 }
 
-export let PhotoSchema : Schema = new Schema({
+let PhotoSchema : Schema = new Schema({
   url: { type: String, required: true },
   creationDate: { type: Date, required: true },
   modificationDate: { type: Date, required: false },
   deletionDate: { type: Date, required: false },
 });
 
-export type PhotoDocument = Photo & Document;
-
 // export default mongoose.model<PhotoDocument>(modelName, PhotoSchema);
-module.exports = mongoose.model<PhotoDocument>(modelName, PhotoSchema);
+module.exports = mongoose.model(modelName, PhotoSchema);
 
-export class PhotoResource implements Resource {
+class PhotoResource implements Resource {
   meta?: {
     creationDate?: Date,
     modificationDate?: Date,
@@ -123,5 +121,3 @@ export class PhotoResource implements Resource {
     }
   }
 }
-
-
