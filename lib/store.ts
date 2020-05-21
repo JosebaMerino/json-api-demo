@@ -1,23 +1,19 @@
 import * as fortune from 'fortune';
+import * as mongoAdapter from 'fortune-mongodb';
+
+import { Photo } from './models/photos.model';
 
 
 // Type definition
 const recordTypes = {
-  photo: {
-    url: String,
-  },
+  photo: Photo,
 };
 
 // Adapter interface
-/*
-const pgAdapter = require('fortune-postgres')
 
-const adapter = [ pgAdapter, {
+const adapter = [ mongoAdapter, {
   // In this example, the Postgres adapter requires the connection URL.
-  url: 'postgres://postgres@localhost:5432/app_db'
-} ]
+  url: 'mongodb://localhost/jsonAPIDemo',
+} ];
 
-const store = fortune(recordTypes, { adapter })
-*/
-
-export const store = fortune(recordTypes);
+export const store = fortune(recordTypes, { adapter });
