@@ -5,6 +5,14 @@ import * as mongoose from 'mongoose';
 
 const APIError = API.types.Error;
 const PORT = '3001';
+const ADDRESS = 'localhost';
+
+const hostUrl = () => {
+  if (ADDRESS.toUpperCase().includes('HTTP') || ADDRESS.toUpperCase().includes('HTTPS')) {
+    return `${ADDRESS}:${PORT}`;
+  }
+  return `http://${ADDRESS}:${PORT}`;
+};
 
 mongoose.connect('mongodb://localhost/json-api-demo2');
 
@@ -23,7 +31,7 @@ let Controller = new API.controllers.API(registry);
 var Docs = new API.controllers.Documentation(registry, { name: 'JSON_API_DEMO' });
 
 // tell the lib the host name your API is served from
-let opts = { host: `http://127.0.0.1:${PORT}` };
+let opts = { host: hostUrl() };
 
 // Initialize the express app + front controller
 let app = express();
@@ -40,14 +48,14 @@ app.get('/', Front.docsRequest);
 app.route('/:type(photos)')
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
 app.route('/:type(photos)/:id')
-  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+  .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
 app.route('/:type(photos)/:id/relationships/:relationship')
-  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
 
 app.use((req, res, next) => {
-  Front.sendError(new APIError({ status: 404 }), req, res, next);
+  Front.sendError(new APIError({ status: 404, detail: 'URL not recognized' }), req, res, next);
 });
 
 // And we're done! Start 'er up!
-console.log(`Starting up! Visit 127.0.0.1:${PORT} to see the docs.`);
+console.log(`Starting up! Visit ${hostUrl()} to see the docs.`);
 app.listen(PORT);
