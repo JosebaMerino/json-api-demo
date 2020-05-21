@@ -1,4 +1,5 @@
 import * as API from 'json-api';
+const RESOURCE = API.Resource;
 
 module.exports = {
   urlTemplates: {
@@ -24,7 +25,10 @@ module.exports = {
    * @returns {Resource|undefined|Promise<Resource|undefined>} - The transformed resource
    * @throws Can throw an error (APIError or Error) to abort the request
    */
-  beforeSave: (resource, meta, extras, superFn) => {
+  beforeSave: (resource: API.Resource, meta, extras, superFn) => {
+    if (resource.attrs.creationDate === null || !resource.attrs.creationDate) {
+      resource.attrs.creationDate = new Date();
+    }
     return resource;
   },
   /**
@@ -45,7 +49,7 @@ module.exports = {
    * @returns {Resource|undefined|Promise<Resource|undefined>} - The transformed resource
    * @throws Can throw an error (APIError or Error) to abort the request
    */
-  beforeRender: (resource, meta, extras, superFn) => {
+  beforeRender: (resource: API.Resource, meta, extras, superFn) => {
     // Add a simulated "principalOf" link, which is the inverse of
     // the School.principal relationship. Don't fill it with contents
     // (by default), but do provide a link to the data on the school side.
@@ -60,6 +64,9 @@ module.exports = {
     });
     */
 
+    if (resource.attrs.creationDate === null) {
+      resource.attrs.creationDate = undefined;
+    }
     return resource;
   },
 };
