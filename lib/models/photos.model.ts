@@ -1,3 +1,4 @@
 export const Photo =  {
-    url: String,
-}
+  url: String,
+  book: ['book', 'photos'],
+};
