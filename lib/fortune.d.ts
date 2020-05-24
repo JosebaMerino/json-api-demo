@@ -1,7 +1,9 @@
-declare module 'fortune' {
-  let methods: ForMethods;
-  let errors: Errors;
-}
+export as namespace fortune;
+export let methods: ForMethods;
+export let errors: Errors;
+
+export = Main
+
 
 interface ForMethods {
   create;
