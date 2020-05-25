@@ -1,29 +1,43 @@
 export as namespace fortune;
-export let methods: ForMethods;
-export let errors: Errors;
 
-export = Main
+export = MainFunction;
+
+declare function MainFunction(recordTypes: any, options: Options):any;
 
 
-interface ForMethods {
-  create;
-  update;
-  delete;
+declare interface Options {
+  /**
+   * configuration array for the adapter
+   */
+  adapter? : any;
+  hooks?: any;
+  documentation?: any;
+  settings?: any;
 }
 
-interface Errors {
-  BadRequestError;
-}
+declare namespace MainFunction {
+  export let methods: ForMethods;
+  export let errors: Errors;
+  interface ForMethods {
+    create: any;
+    update: any;
+    delete: any;
+  }
 
-// Input hooks
-interface Context {
-  request: Request & ForRequest;
-}
+  interface Errors {
+    BadRequestError;
+  }
 
-interface ForRequest {
-  meta: ForMeta;
-}
+  // Input hooks
+  interface Context {
+    request: Request & ForRequest;
+  }
 
-interface ForMeta {
-  language;
+  interface ForRequest {
+    meta: ForMeta;
+  }
+
+  interface ForMeta {
+    language;
+  }
 }
