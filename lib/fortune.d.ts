@@ -18,6 +18,7 @@ declare interface Options {
 declare namespace MainFunction {
   export let methods: ForMethods;
   export let errors: Errors;
+  
   interface ForMethods {
     create: any;
     update: any;

@@ -1,6 +1,8 @@
 import * as fortune from 'fortune';
 import * as mongoAdapter from 'fortune-mongodb';
 
+import { hooks } from './hooks/hooks';
+
 import { Photo } from './models/photos.model';
 import { Book } from './models/books.model';
 
@@ -17,4 +19,4 @@ const adapter = [mongoAdapter, {
   url: 'mongodb://localhost/jsonAPIDemo',
 }];
 
-export const store = fortune(recordTypes, { adapter });
+export const store = fortune(recordTypes, { adapter, hooks });
